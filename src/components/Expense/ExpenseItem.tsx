@@ -3,11 +3,11 @@ import { AppContext } from "../../context/AppContext";
 import { Expense } from "../../types/types";
 
 const ExpenseItem = (currentExpense: Expense) => {
-  const { expenses, setExpenses } = useContext(AppContext);  // Access AppContext
+  const { expenses, setExpenses } = useContext(AppContext); //access AppContext
 
   const handleDeleteExpense = (expenseToDelete: Expense) => {
     const updatedExpenses = expenses.filter(expense => expense.id !== expenseToDelete.id);
-    setExpenses(updatedExpenses);  // Update the expenses array
+    setExpenses(updatedExpenses);  //update expenses array
   };
 
   return (
