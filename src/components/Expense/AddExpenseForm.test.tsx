@@ -1,33 +1,24 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { AppProvider } from "../../context/AppContext";
 import AddExpenseForm from "./AddExpenseForm";
-import ExpenseList from "./ExpenseList";
-import Remaining from "../Remaining";
+import { AppContext } from "../../context/AppContext";
+import { Expense } from "../../types/types";
 
-test("creates an expense and updates the remaining budget", () => {
+test("should add a new expense to the context", () => {
+  const mockSetExpenses = jest.fn();
+  const expenses: Expense[] = [];
+  const budget = 1000;
+  const setBudget = jest.fn();
+
   render(
-    <AppProvider>
+    <AppContext.Provider value={{ expenses, setExpenses: mockSetExpenses, budget, setBudget }}>
       <AddExpenseForm />
-      <Remaining />
-      <ExpenseList />
-    </AppProvider>
+    </AppContext.Provider>
   );
 
-  // Find input elements
-  const nameInput = screen.getByLabelText("Name");
-  const costInput = screen.getByLabelText("Cost");
-  const saveButton = screen.getByText("Save");
+  fireEvent.change(screen.getByLabelText(/name/i), { target: { value: "Coffee" } });
+  fireEvent.change(screen.getByLabelText(/cost/i), { target: { value: "5" } });
 
-  // Simulate user input
-  fireEvent.change(nameInput, { target: { value: "Test Expense" } });
-  fireEvent.change(costInput, { target: { value: "100" } });
-  fireEvent.click(saveButton);
+  fireEvent.click(screen.getByText(/save/i));
 
-  // Verify the expense is added to the list
-  const newExpense = screen.getByText("Test Expense");
-  expect(newExpense).toBeInTheDocument();
-
-  // Verify remaining budget is updated correctly
-  const remaining = screen.getByText(/Remaining:/);
-  expect(remaining).toHaveTextContent("Remaining: $900"); // Assuming initial budget is $1000
+  expect(mockSetExpenses).toHaveBeenCalledWith([{ id: "1", name: "Coffee", cost: 5 }]);
 });

@@ -7,7 +7,7 @@ const Remaining = () => {
 
   //calculate total expenses using reduce
   const totalExpenses = expenses.reduce((total, item) => {
-    return total + item.cost;
+    return total + (item.cost ? Number(item.cost) : 0);  // Ensure `cost` is a number
   }, 0);
 
   //determine alert type based on remaining budget
